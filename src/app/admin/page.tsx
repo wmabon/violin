@@ -24,7 +24,9 @@ import {
   Filter,
   ChevronRight,
   Mail,
+  Plane,
 } from "lucide-react";
+import { TravelDashboard } from "@/components/admin/travel-dashboard";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -199,7 +201,7 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-1 px-6 border-t border-stone-100">
-          {["overview", "bookings", "calendar", "clients", "finances", "settings"].map(
+          {["overview", "bookings", "travel", "calendar", "clients", "finances", "settings"].map(
             (tab) => (
               <button
                 key={tab}
@@ -220,6 +222,12 @@ export default function AdminDashboard() {
 
       {/* Main Content */}
       <main className="p-6">
+        {/* Travel Tab */}
+        {activeTab === "travel" && <TravelDashboard />}
+
+        {/* Overview Tab (Default) */}
+        {activeTab === "overview" && (
+          <>
         {/* Stats Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {stats.map((stat) => (
@@ -440,6 +448,8 @@ export default function AdminDashboard() {
             </Card>
           </div>
         </div>
+          </>
+        )}
       </main>
     </div>
   );

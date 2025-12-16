@@ -25,6 +25,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { BookingCalendar, MiniCalendar } from "./booking-calendar";
 import { PackageSelector } from "./package-selector";
 import { PricingSummary } from "./pricing-summary";
+import { TravelQuote } from "./travel-quote";
 import { calculatePricing, ADD_ONS } from "@/lib/pricing";
 import { formatCurrency, formatDate, getDurationLabel } from "@/lib/utils";
 import { mockPackages, getBookedDates } from "@/lib/db";
@@ -92,6 +93,8 @@ interface BookingFormData {
   duration: number;
   venueName: string;
   venueAddress: string;
+  venueCity: string;
+  venueState: string;
   guestCount: number;
   specialRequests: string;
   packageId: string;
@@ -102,6 +105,68 @@ interface BookingFormData {
   phone: string;
 }
 
+interface TravelQuoteData {
+  performanceFee: number;
+  travelAccommodation: number;
+  total: number;
+  deposit: number;
+}
+
+// US States for venue selection
+const US_STATES = [
+  { value: "AL", label: "Alabama" },
+  { value: "AK", label: "Alaska" },
+  { value: "AZ", label: "Arizona" },
+  { value: "AR", label: "Arkansas" },
+  { value: "CA", label: "California" },
+  { value: "CO", label: "Colorado" },
+  { value: "CT", label: "Connecticut" },
+  { value: "DE", label: "Delaware" },
+  { value: "FL", label: "Florida" },
+  { value: "GA", label: "Georgia" },
+  { value: "HI", label: "Hawaii" },
+  { value: "ID", label: "Idaho" },
+  { value: "IL", label: "Illinois" },
+  { value: "IN", label: "Indiana" },
+  { value: "IA", label: "Iowa" },
+  { value: "KS", label: "Kansas" },
+  { value: "KY", label: "Kentucky" },
+  { value: "LA", label: "Louisiana" },
+  { value: "ME", label: "Maine" },
+  { value: "MD", label: "Maryland" },
+  { value: "MA", label: "Massachusetts" },
+  { value: "MI", label: "Michigan" },
+  { value: "MN", label: "Minnesota" },
+  { value: "MS", label: "Mississippi" },
+  { value: "MO", label: "Missouri" },
+  { value: "MT", label: "Montana" },
+  { value: "NE", label: "Nebraska" },
+  { value: "NV", label: "Nevada" },
+  { value: "NH", label: "New Hampshire" },
+  { value: "NJ", label: "New Jersey" },
+  { value: "NM", label: "New Mexico" },
+  { value: "NY", label: "New York" },
+  { value: "NC", label: "North Carolina" },
+  { value: "ND", label: "North Dakota" },
+  { value: "OH", label: "Ohio" },
+  { value: "OK", label: "Oklahoma" },
+  { value: "OR", label: "Oregon" },
+  { value: "PA", label: "Pennsylvania" },
+  { value: "RI", label: "Rhode Island" },
+  { value: "SC", label: "South Carolina" },
+  { value: "SD", label: "South Dakota" },
+  { value: "TN", label: "Tennessee" },
+  { value: "TX", label: "Texas" },
+  { value: "UT", label: "Utah" },
+  { value: "VT", label: "Vermont" },
+  { value: "VA", label: "Virginia" },
+  { value: "WA", label: "Washington" },
+  { value: "WV", label: "West Virginia" },
+  { value: "WI", label: "Wisconsin" },
+  { value: "WY", label: "Wyoming" },
+  { value: "DC", label: "Washington D.C." },
+];
+
 export function BookingForm() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<BookingFormData>({
@@ -111,6 +176,8 @@ export function BookingForm() {
     duration: 120,
     venueName: "",
     venueAddress: "",
+    venueCity: "",
+    venueState: "",
     guestCount: 100,
     specialRequests: "",
     packageId: "",
@@ -120,6 +187,7 @@ export function BookingForm() {
     email: "",
     phone: "",
   });
+  const [travelQuote, setTravelQuote] = useState<TravelQuoteData | null>(null);
 
   const bookedDates = getBookedDates();
 
@@ -161,7 +229,7 @@ export function BookingForm() {
       case 2:
         return !!formData.date && !!formData.startTime;
       case 3:
-        return !!formData.venueName;
+        return !!formData.venueName && !!formData.venueCity && !!formData.venueState;
       case 4:
         return !!formData.packageId;
       case 5:
@@ -174,6 +242,16 @@ export function BookingForm() {
       default:
         return true;
     }
+  };
+
+  // Calculate end time based on start time and duration
+  const getEndTime = () => {
+    if (!formData.startTime) return "";
+    const [hours, minutes] = formData.startTime.split(":").map(Number);
+    const totalMinutes = hours * 60 + minutes + (selectedPackage?.duration || formData.duration);
+    const endHours = Math.floor(totalMinutes / 60) % 24;
+    const endMinutes = totalMinutes % 60;
+    return `${endHours.toString().padStart(2, "0")}:${endMinutes.toString().padStart(2, "0")}`;
   };
 
   return (
@@ -332,7 +410,7 @@ export function BookingForm() {
                     Tell us about your venue
                   </h2>
                   <p className="text-stone-600 mb-8">
-                    Provide details about where your event will take place.
+                    Provide details about where your event will take place. This helps us calculate travel costs.
                   </p>
 
                   <div className="space-y-6 max-w-xl">
@@ -344,11 +422,27 @@ export function BookingForm() {
                     />
 
                     <Input
-                      label="Venue Address"
-                      placeholder="123 Main Street, City, State"
+                      label="Street Address"
+                      placeholder="123 Main Street"
                       value={formData.venueAddress}
                       onChange={(e) => updateFormData({ venueAddress: e.target.value })}
                     />
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <Input
+                        label="City"
+                        placeholder="e.g., Nashville"
+                        value={formData.venueCity}
+                        onChange={(e) => updateFormData({ venueCity: e.target.value })}
+                      />
+                      <Select
+                        label="State"
+                        options={US_STATES}
+                        value={formData.venueState}
+                        onChange={(value) => updateFormData({ venueState: value })}
+                        placeholder="Select state"
+                      />
+                    </div>
 
                     <Input
                       label="Estimated Guest Count"
@@ -436,7 +530,7 @@ export function BookingForm() {
               )}
 
               {/* Step 6: Payment & Confirmation */}
-              {currentStep === 6 && pricing && (
+              {currentStep === 6 && pricing && formData.date && (
                 <div>
                   <h2 className="text-2xl font-serif font-bold text-stone-900 mb-2">
                     Review & Payment
@@ -485,8 +579,11 @@ export function BookingForm() {
                           </div>
                           <div className="flex justify-between">
                             <dt className="text-stone-600">Venue</dt>
-                            <dd className="font-medium text-stone-900">
-                              {formData.venueName}
+                            <dd className="font-medium text-stone-900 text-right">
+                              <div>{formData.venueName}</div>
+                              <div className="text-sm text-stone-500">
+                                {formData.venueCity}, {formData.venueState}
+                              </div>
                             </dd>
                           </div>
                         </dl>
@@ -519,8 +616,21 @@ export function BookingForm() {
                       </div>
                     </div>
 
-                    {/* Pricing Summary */}
-                    <PricingSummary pricing={pricing} />
+                    {/* Travel Quote & Pricing */}
+                    <div className="space-y-6">
+                      {formData.venueCity && formData.venueState && (
+                        <TravelQuote
+                          venueCity={formData.venueCity}
+                          venueState={formData.venueState}
+                          eventDate={formData.date}
+                          eventStartTime={formData.startTime}
+                          eventEndTime={getEndTime()}
+                          eventType={formData.eventType}
+                          duration={selectedPackage?.duration || formData.duration}
+                          onQuoteCalculated={(quote) => setTravelQuote(quote)}
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
               )}
@@ -544,9 +654,9 @@ export function BookingForm() {
                 <ArrowRight className="h-5 w-5 ml-2" />
               </Button>
             ) : (
-              <Button disabled={!canProceed()}>
+              <Button disabled={!canProceed() || !travelQuote}>
                 <CreditCard className="h-5 w-5 mr-2" />
-                Pay Deposit ({pricing && formatCurrency(pricing.depositAmount)})
+                Pay Deposit ({travelQuote ? formatCurrency(travelQuote.deposit) : "Loading..."})
               </Button>
             )}
           </div>
