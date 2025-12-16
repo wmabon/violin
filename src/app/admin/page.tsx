@@ -25,8 +25,10 @@ import {
   ChevronRight,
   Mail,
   Plane,
+  Sparkles,
 } from "lucide-react";
 import { TravelDashboard } from "@/components/admin/travel-dashboard";
+import { SubscriptionDashboard } from "@/components/admin/subscription-dashboard";
 import { formatCurrency, formatDate } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 
@@ -200,8 +202,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1 px-6 border-t border-stone-100">
-          {["overview", "bookings", "travel", "calendar", "clients", "finances", "settings"].map(
+        <div className="flex gap-1 px-6 border-t border-stone-100 overflow-x-auto">
+          {["overview", "bookings", "subscriptions", "travel", "calendar", "clients", "finances", "settings"].map(
             (tab) => (
               <button
                 key={tab}
@@ -224,6 +226,9 @@ export default function AdminDashboard() {
       <main className="p-6">
         {/* Travel Tab */}
         {activeTab === "travel" && <TravelDashboard />}
+
+        {/* Subscriptions Tab */}
+        {activeTab === "subscriptions" && <SubscriptionDashboard />}
 
         {/* Overview Tab (Default) */}
         {activeTab === "overview" && (

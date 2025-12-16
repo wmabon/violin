@@ -469,3 +469,341 @@ model HotelRateHistory {
   @@index([city, state])
   @@index([stayDate])
 }
+
+// ============================================
+// SUBSCRIPTION & GIFT REVENUE SYSTEM
+// ============================================
+
+// Subscription Plans Configuration
+model SubscriptionPlan {
+  id              String   @id @default(cuid())
+  type            String   // learning, recording_club, anniversary, hold_music
+  tier            String   // foundation, professional, elite, monthly, annual, etc.
+  name            String
+  description     String
+  price           Float    // Monthly price
+  annualPrice     Float?   // Annual price (if applicable)
+  features        String   // JSON array of features
+  maxUsers        Int?     // For corporate plans
+  isActive        Boolean  @default(true)
+  sortOrder       Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  subscriptions   Subscription[]
+
+  @@unique([type, tier])
+}
+
+// Active Subscriptions
+model Subscription {
+  id                  String    @id @default(cuid())
+  planId              String
+  plan                SubscriptionPlan @relation(fields: [planId], references: [id])
+
+  // Subscriber info
+  email               String
+  name                String
+  phone               String?
+  companyName         String?   // For corporate subscriptions
+
+  // Billing
+  billingCycle        String    @default("monthly") // monthly, annual
+  currentPrice        Float
+  stripeCustomerId    String?
+  stripeSubscriptionId String?
+
+  // Status
+  status              String    @default("active") // active, paused, cancelled, past_due
+  startDate           DateTime  @default(now())
+  currentPeriodStart  DateTime?
+  currentPeriodEnd    DateTime?
+  cancelledAt         DateTime?
+  cancelReason        String?
+
+  // Anniversary program specific
+  weddingDate         DateTime? // For anniversary subscriptions
+  partnerName         String?
+  songTitle           String?   // "Our song"
+
+  // Metadata
+  referralSource      String?
+  notes               String?
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  contentAccess       SubscriptionContentAccess[]
+  payments            SubscriptionPayment[]
+}
+
+// Track content access for subscriptions
+model SubscriptionContentAccess {
+  id              String       @id @default(cuid())
+  subscriptionId  String
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  contentId       String
+  content         SubscriptionContent @relation(fields: [contentId], references: [id])
+  accessedAt      DateTime     @default(now())
+  completedAt     DateTime?
+  progressPercent Int          @default(0)
+}
+
+// Subscription Content (lessons, recordings, etc.)
+model SubscriptionContent {
+  id              String    @id @default(cuid())
+  type            String    // lesson, recording, resource, live_session
+  subscriptionType String   // learning, recording_club
+  tier            String    // foundation, professional, elite, all
+
+  title           String
+  description     String?
+  thumbnailUrl    String?
+
+  // Content details
+  contentUrl      String?   // Video/audio URL
+  duration        Int?      // In seconds
+  sortOrder       Int       @default(0)
+
+  // For lessons
+  category        String?   // Beginner, Intermediate, Advanced, Technique, etc.
+
+  // For recordings
+  releaseMonth    String?   // e.g., "2024-01" for monthly releases
+
+  isPublished     Boolean   @default(false)
+  publishedAt     DateTime?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  accessLogs      SubscriptionContentAccess[]
+}
+
+// Subscription Payments
+model SubscriptionPayment {
+  id              String       @id @default(cuid())
+  subscriptionId  String
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  amount          Float
+  status          String       @default("pending") // pending, completed, failed, refunded
+  stripePaymentId String?
+  stripeInvoiceId String?
+  periodStart     DateTime
+  periodEnd       DateTime
+  paidAt          DateTime?
+  createdAt       DateTime     @default(now())
+}
+
+// Gift Products Catalog
+model GiftProduct {
+  id              String    @id @default(cuid())
+  type            String    // custom_arrangement, dedication_video, virtual_serenade, concert_box
+  tier            String    // digital, keepsake, video, premium, standard, etc.
+  name            String
+  description     String
+  price           Float
+  rushPrice       Float?    // Additional cost for rush delivery
+  features        String    // JSON array of what's included
+  deliveryDays    Int       @default(7) // Standard delivery time
+  rushDeliveryDays Int?     // Rush delivery time
+  isActive        Boolean   @default(true)
+  sortOrder       Int       @default(0)
+  imageUrl        String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  orders          GiftOrder[]
+}
+
+// Gift Orders
+model GiftOrder {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique
+  productId       String
+  product         GiftProduct @relation(fields: [productId], references: [id])
+
+  // Customer info (purchaser)
+  customerEmail   String
+  customerName    String
+  customerPhone   String?
+
+  // Recipient info
+  recipientName   String
+  recipientEmail  String?
+  recipientPhone  String?
+
+  // Order details
+  occasion        String?     // birthday, anniversary, sympathy, etc.
+  dedicationMessage String?   // Personal message to include
+  songRequest     String?     // Requested song
+  songArtist      String?
+  additionalNotes String?
+
+  // Scheduling (for virtual serenades)
+  scheduledDate   DateTime?
+  scheduledTime   String?
+  timezone        String?
+
+  // Pricing
+  basePrice       Float
+  rushFee         Float       @default(0)
+  totalPrice      Float
+
+  // Delivery
+  isRush          Boolean     @default(false)
+  dueDate         DateTime
+  deliveredAt     DateTime?
+  deliveryUrl     String?     // Download link for digital products
+
+  // Status
+  status          String      @default("pending") // pending, in_progress, ready, delivered, cancelled
+
+  // Payment
+  stripePaymentId String?
+  paidAt          DateTime?
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+}
+
+// Sheet Music Products
+model SheetMusic {
+  id              String    @id @default(cuid())
+  title           String
+  artist          String?
+  arranger        String    @default("Victoria Strings")
+
+  // Categorization
+  category        String    // wedding, pop, film, holiday, classical
+  difficulty      String?   // beginner, intermediate, advanced
+
+  // Product details
+  description     String?
+  price           Float
+  previewUrl      String?   // Preview image or audio
+  downloadUrl     String    // PDF download URL
+  pageCount       Int?
+  duration        String?   // e.g., "3:45"
+
+  // Bundle info
+  bundleId        String?   // If part of a bundle
+
+  isActive        Boolean   @default(true)
+  isFeatured      Boolean   @default(false)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  purchases       SheetMusicPurchase[]
+}
+
+// Sheet Music Purchases
+model SheetMusicPurchase {
+  id              String     @id @default(cuid())
+  sheetMusicId    String
+  sheetMusic      SheetMusic @relation(fields: [sheetMusicId], references: [id])
+
+  customerEmail   String
+  customerName    String?
+
+  price           Float
+  stripePaymentId String?
+
+  downloadCount   Int        @default(0)
+  lastDownloadAt  DateTime?
+
+  createdAt       DateTime   @default(now())
+}
+
+// Sheet Music Bundles
+model SheetMusicBundle {
+  id              String    @id @default(cuid())
+  name            String    // e.g., "Complete Wedding Package"
+  description     String
+  category        String    // wedding, holiday, etc.
+  price           Float
+  originalValue   Float     // Sum of individual prices
+  sheetMusicIds   String    // JSON array of included sheet music IDs
+  imageUrl        String?
+  isActive        Boolean   @default(true)
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+// Gift Cards
+model GiftCard {
+  id              String    @id @default(cuid())
+  code            String    @unique
+
+  // Purchaser info
+  purchaserEmail  String
+  purchaserName   String
+
+  // Recipient info
+  recipientEmail  String?
+  recipientName   String?
+  personalMessage String?
+
+  // Value
+  originalAmount  Float
+  currentBalance  Float
+
+  // Delivery
+  deliveryType    String    @default("digital") // digital, physical
+  deliveredAt     DateTime?
+
+  // Status
+  status          String    @default("active") // active, redeemed, expired, cancelled
+  expiresAt       DateTime? // Null = no expiration
+
+  // Payment
+  stripePaymentId String?
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  redemptions     GiftCardRedemption[]
+}
+
+// Gift Card Redemptions
+model GiftCardRedemption {
+  id          String   @id @default(cuid())
+  giftCardId  String
+  giftCard    GiftCard @relation(fields: [giftCardId], references: [id])
+  amount      Float
+  orderId     String?  // Reference to what was purchased
+  orderType   String?  // booking, gift_product, subscription, sheet_music
+  redeemedBy  String   // Email of person who redeemed
+  createdAt   DateTime @default(now())
+}
+
+// Product Reviews (for gift products and sheet music)
+model ProductReview {
+  id          String   @id @default(cuid())
+  productType String   // gift_product, sheet_music
+  productId   String
+
+  reviewerName  String
+  reviewerEmail String
+  rating        Int      // 1-5
+  title         String?
+  content       String
+
+  isVerified    Boolean  @default(false) // Verified purchase
+  isApproved    Boolean  @default(false)
+
+  createdAt     DateTime @default(now())
+}
+
+// Cross-sell tracking
+model CrossSellConversion {
+  id              String   @id @default(cuid())
+  sourceType      String   // booking, gift_product, subscription
+  sourceId        String
+  targetType      String   // subscription, gift_product, sheet_music
+  targetId        String
+  conversionDate  DateTime @default(now())
+  revenue         Float
+}
