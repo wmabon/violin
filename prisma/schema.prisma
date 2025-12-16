@@ -1,0 +1,244 @@
+// Prisma schema for Violin Booking Platform
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// User model for authentication (admin and clients)
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String
+  phone         String?
+  role          String    @default("client") // admin, client
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+  messages      Message[]
+  sessions      Session[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Event types configuration
+model EventType {
+  id              String    @id @default(cuid())
+  name            String    // Wedding, Corporate, Private, Virtual
+  slug            String    @unique
+  description     String
+  basePrice       Float
+  minDuration     Int       // in minutes
+  maxDuration     Int       // in minutes
+  depositPercent  Float     @default(0.5) // 50% default deposit
+  isActive        Boolean   @default(true)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  bookings        Booking[]
+  packages        Package[]
+}
+
+// Packages for each event type
+model Package {
+  id            String    @id @default(cuid())
+  eventTypeId   String
+  eventType     EventType @relation(fields: [eventTypeId], references: [id], onDelete: Cascade)
+  name          String
+  description   String
+  price         Float
+  duration      Int       // in minutes
+  features      String    // JSON array of features
+  isPopular     Boolean   @default(false)
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  bookings      Booking[]
+}
+
+// Main booking model
+model Booking {
+  id                String    @id @default(cuid())
+  bookingNumber     String    @unique
+  userId            String
+  user              User      @relation(fields: [userId], references: [id])
+  eventTypeId       String
+  eventType         EventType @relation(fields: [eventTypeId], references: [id])
+  packageId         String?
+  package           Package?  @relation(fields: [packageId], references: [id])
+
+  // Event details
+  eventDate         DateTime
+  startTime         String
+  endTime           String
+  duration          Int       // in minutes
+  venueName         String
+  venueAddress      String
+  guestCount        Int?
+  specialRequests   String?
+
+  // Pricing
+  basePrice         Float
+  travelFee         Float     @default(0)
+  addOns            String?   // JSON array of add-ons
+  totalPrice        Float
+  depositAmount     Float
+  depositPaid       Boolean   @default(false)
+  balancePaid       Boolean   @default(false)
+
+  // Status
+  status            String    @default("inquiry") // inquiry, deposit_pending, confirmed, completed, cancelled
+
+  // Timestamps
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  payments          Payment[]
+  messages          Message[]
+  songRequests      SongRequest[]
+}
+
+// Payment tracking
+model Payment {
+  id              String   @id @default(cuid())
+  bookingId       String
+  booking         Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  amount          Float
+  type            String   // deposit, balance, full
+  status          String   @default("pending") // pending, completed, failed, refunded
+  stripePaymentId String?
+  stripeInvoiceId String?
+  paidAt          DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Client messages/communication
+model Message {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  content   String
+  isAdmin   Boolean  @default(false)
+  readAt    DateTime?
+  createdAt DateTime @default(now())
+}
+
+// Song requests from clients
+model SongRequest {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  songTitle String
+  artist    String?
+  notes     String?
+  priority  Int      @default(0) // 0 = normal, 1 = must have, 2 = would be nice
+  status    String   @default("pending") // pending, confirmed, not_available
+  createdAt DateTime @default(now())
+}
+
+// Calendar availability/blocking
+model Availability {
+  id        String   @id @default(cuid())
+  date      DateTime
+  isBlocked Boolean  @default(false)
+  reason    String?  // "booked", "personal", "travel"
+  bookingId String?  // Reference to booking if blocked due to booking
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([date])
+}
+
+// Repertoire/song list
+model Repertoire {
+  id          String   @id @default(cuid())
+  title       String
+  artist      String?
+  genre       String   // Classical, Contemporary, Pop, Wedding, Jazz, Film
+  category    String?  // Ceremony, Cocktail Hour, Reception, etc.
+  duration    Int?     // in seconds
+  isPopular   Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  audioUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Testimonials
+model Testimonial {
+  id          String   @id @default(cuid())
+  clientName  String
+  eventType   String
+  venue       String?
+  date        DateTime?
+  content     String
+  rating      Int      @default(5) // 1-5 stars
+  isApproved  Boolean  @default(false)
+  isFeatured  Boolean  @default(false)
+  photoUrl    String?
+  createdAt   DateTime @default(now())
+}
+
+// Media gallery
+model Media {
+  id          String   @id @default(cuid())
+  type        String   // photo, video, audio
+  title       String
+  description String?
+  url         String
+  thumbnailUrl String?
+  category    String?  // Performance, Wedding, Corporate, etc.
+  isFeatured  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+}
+
+// Newsletter subscribers
+model Subscriber {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  source       String?  // website, referral, event
+  isActive     Boolean  @default(true)
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+}
+
+// Inquiries/leads
+model Inquiry {
+  id          String   @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  eventType   String?
+  eventDate   DateTime?
+  message     String
+  status      String   @default("new") // new, contacted, qualified, converted, closed
+  source      String?  // website, referral, advertisement
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Pricing configuration
+model PricingConfig {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  value       Float
+  description String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
