@@ -12,7 +12,9 @@ This platform serves as the primary booking interface for a solo violinist opera
 - **Dynamic Pricing Engine** - Intelligent pricing with seasonal multipliers, peak date surcharges, and customizable add-ons
 - **Intelligent Travel System** - Automated travel cost calculation from dual home bases with flight/hotel estimates
 - **Calendar Intelligence** - Smart scheduling with travel time blocking, conflict detection, and personal time protection
-- **Admin Dashboard** - Comprehensive management of bookings, travel logistics, and business analytics
+- **Subscription Revenue** - Recurring income from learning subscriptions, recording clubs, and corporate hold music
+- **Gift Products Shop** - Custom arrangements, dedication videos, virtual serenades, and sheet music store
+- **Admin Dashboard** - Comprehensive management of bookings, travel, subscriptions, and analytics
 - **Client Portal** - Self-service access for clients to manage bookings and song requests
 - **Stripe Integration** - Secure payment processing with 50% deposit system
 
@@ -76,18 +78,25 @@ src/
 │   ├── api/               # API routes
 │   │   ├── calendar/      # Availability checking
 │   │   ├── checkout/      # Stripe checkout
+│   │   ├── shop/          # Subscriptions, gifts, sheet music
 │   │   ├── travel/        # Travel quote & clustering
 │   │   └── webhook/       # Stripe webhooks
 │   ├── booking/           # Client booking flow
-│   └── client/            # Client portal
+│   ├── client/            # Client portal
+│   └── shop/              # Store pages
+│       ├── subscriptions/ # Subscription plans
+│       ├── gift-cards/    # Gift card purchasing
+│       └── sheet-music/   # Digital downloads
 ├── components/
 │   ├── admin/             # Admin components
 │   ├── booking/           # Booking flow components
 │   ├── portfolio/         # Public site components
+│   ├── shop/              # Shop components
 │   └── ui/                # Reusable UI components
 └── lib/
     ├── calendar-intelligence.ts  # Scheduling logic
     ├── pricing.ts                # Pricing calculations
+    ├── subscriptions.ts          # Subscription & gift config
     ├── travel-calculator.ts      # Travel cost engine
     └── travel-config.ts          # Home bases & config
 ```
@@ -130,6 +139,38 @@ Total = Base Price + Duration Premium + Peak Date Surcharge + Travel Fee + Add-o
 - **Seasonal**: Wedding season (May-Oct) premium
 - **Add-ons**: Sound system, additional repertoire, extended hours
 
+### Subscription & Gift Revenue System
+
+Passive and recurring income streams for scalable growth, targeting $16,000/month additional revenue.
+
+#### Subscription Plans
+
+| Plan | Monthly Price | Target Revenue |
+|------|---------------|----------------|
+| Violin Mastery (Learning) | $29-199/mo | $5,000/mo |
+| Strings Attached (Recording Club) | $19/mo | $3,000/mo |
+| Anniversary Program | $99-349/yr | $2,000/yr+ |
+| Corporate Hold Music | $49-199/mo | $1,500/mo |
+
+#### Gift Products
+
+| Product | Price Range | Description |
+|---------|-------------|-------------|
+| Custom Arrangements | $175-750 | Personalized song arrangements with recording |
+| Dedication Videos | $85-150 | Short personalized video performances |
+| Virtual Serenades | $199-499 | Live private performances via video call |
+| Concert in a Box | $129-279 | At-home concert experience package |
+| Sheet Music | $15-75 | Professional violin arrangements (PDF) |
+| Gift Cards | $25-5,000 | Redeemable for any service |
+
+#### Shop Features
+
+- Category-based browsing (subscriptions, gifts, sheet music, gift cards)
+- Tiered subscription selection with billing cycle toggle
+- Rush delivery options for gift products
+- Shopping cart for sheet music bundles
+- Admin dashboard with subscription/order management
+
 ## API Endpoints
 
 | Endpoint | Method | Description |
@@ -138,6 +179,10 @@ Total = Base Price + Duration Premium + Peak Date Surcharge + Travel Fee + Add-o
 | `/api/calendar/availability` | GET | Get monthly availability |
 | `/api/calendar/availability` | POST | Check specific date availability |
 | `/api/travel/clustering` | GET | Detect clustering opportunities |
+| `/api/shop/subscriptions` | GET/POST | List plans and create subscriptions |
+| `/api/shop/gifts` | GET/POST | List products and create gift orders |
+| `/api/shop/sheet-music` | GET/POST | Browse catalog and purchase downloads |
+| `/api/shop/gift-cards` | GET/POST | Purchase and redeem gift cards |
 | `/api/checkout` | POST | Create Stripe checkout session |
 | `/api/webhook` | POST | Handle Stripe webhooks |
 
@@ -150,7 +195,11 @@ The Prisma schema includes models for:
 - **Event Types & Packages** - Configurable service offerings
 - **Travel System** - Home bases, itineraries, flights, hotels, expenses
 - **Calendar Events** - Scheduling with category and block types
-- **Supporting Models** - Repertoire, testimonials, media, inquiries
+- **Subscriptions** - Plans, subscribers, content access, payments
+- **Gift Products** - Catalog, orders, delivery tracking
+- **Sheet Music** - Digital products, purchases, bundles
+- **Gift Cards** - Issuance, redemptions, balances
+- **Supporting Models** - Repertoire, testimonials, media, inquiries, reviews
 
 ## Development
 
