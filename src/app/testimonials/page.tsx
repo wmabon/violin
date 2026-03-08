@@ -10,7 +10,7 @@ import { formatDate } from "@/lib/utils";
 export const metadata: Metadata = {
   title: "Testimonials",
   description:
-    "Read what couples and event planners say about Victoria Strings. Over 150 five-star reviews from weddings, corporate events, and private celebrations.",
+    "Read what couples and event planners say about Harrison Strings. Over 150 five-star reviews from weddings, corporate events, and private celebrations.",
 };
 
 const stats = [

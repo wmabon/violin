@@ -16,7 +16,7 @@ export const mockTestimonials = [
     venue: "The Grand Ballroom, Four Seasons",
     date: new Date("2024-06-15"),
     content:
-      "Victoria made our wedding absolutely magical. Her performance during our ceremony brought tears to everyone's eyes. The way she played 'Canon in D' as I walked down the aisle was everything I dreamed of and more. She was incredibly professional, easy to work with, and her music created the perfect atmosphere throughout our cocktail hour. We couldn't have asked for a more talented musician.",
+      "Harrison made our wedding absolutely magical. His performance during our ceremony brought tears to everyone's eyes. The way he played 'Canon in D' as I walked down the aisle was everything I dreamed of and more. He was incredibly professional, easy to work with, and his music created the perfect atmosphere throughout our cocktail hour. We couldn't have asked for a more talented musician.",
     rating: 5,
     isApproved: true,
     isFeatured: true,
@@ -28,7 +28,7 @@ export const mockTestimonials = [
     venue: "The Ritz-Carlton",
     date: new Date("2024-09-22"),
     content:
-      "We hired Victoria for our annual company gala and she exceeded all expectations. Her elegant performance set the perfect tone for our black-tie event. Our guests were thoroughly impressed with both her talent and professionalism. We've already booked her for next year's event!",
+      "We hired Harrison for our annual company gala and he exceeded all expectations. His elegant performance set the perfect tone for our black-tie event. Our guests were thoroughly impressed with both his talent and professionalism. We've already booked him for next year's event!",
     rating: 5,
     isApproved: true,
     isFeatured: true,
@@ -40,7 +40,7 @@ export const mockTestimonials = [
     venue: "Private Residence",
     date: new Date("2024-08-10"),
     content:
-      "Victoria performed at our 25th wedding anniversary celebration. She learned our wedding song and played it perfectly - such a touching moment for us. Her repertoire was diverse and she kept our guests entertained all evening. A true professional with extraordinary talent.",
+      "Harrison performed at our 25th wedding anniversary celebration. He learned our wedding song and played it perfectly - such a touching moment for us. His repertoire was diverse and he kept our guests entertained all evening. A true professional with extraordinary talent.",
     rating: 5,
     isApproved: true,
     isFeatured: true,
@@ -52,7 +52,7 @@ export const mockTestimonials = [
     venue: "Vineyard Estate",
     date: new Date("2024-05-28"),
     content:
-      "From our first consultation to the last note at our reception, Victoria was amazing. She provided excellent suggestions for our ceremony music and seamlessly transitioned between different parts of our wedding day. Her violin added such an elegant touch to our vineyard wedding.",
+      "From our first consultation to the last note at our reception, Harrison was amazing. He provided excellent suggestions for our ceremony music and seamlessly transitioned between different parts of our wedding day. His violin added such an elegant touch to our vineyard wedding.",
     rating: 5,
     isApproved: true,
     isFeatured: false,
@@ -64,7 +64,7 @@ export const mockTestimonials = [
     venue: "Tech Conference Center",
     date: new Date("2024-07-14"),
     content:
-      "Victoria performed at our product launch event and created exactly the sophisticated ambiance we were looking for. She was flexible with timing as our schedule shifted, and her music impressed all of our VIP guests. Highly recommend for corporate events!",
+      "Harrison performed at our product launch event and created exactly the sophisticated ambiance we were looking for. He was flexible with timing as our schedule shifted, and his music impressed all of our VIP guests. Highly recommend for corporate events!",
     rating: 5,
     isApproved: true,
     isFeatured: false,
