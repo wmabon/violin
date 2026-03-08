@@ -1,10 +1,23 @@
 import Stripe from "stripe";
 
-// Initialize Stripe with the secret key
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-  apiVersion: "2025-11-17.clover",
-  typescript: true,
-});
+// Initialize Stripe with the secret key (lazy to avoid build errors when key is missing)
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) {
+    throw new Error("STRIPE_SECRET_KEY is not set");
+  }
+  return new Stripe(key, {
+    apiVersion: "2025-11-17.clover",
+    typescript: true,
+  });
+}
+
+export const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2025-11-17.clover",
+      typescript: true,
+    })
+  : (null as unknown as Stripe);
 
 // Create a checkout session for booking deposits
 export async function createCheckoutSession({
