@@ -171,7 +171,7 @@ export default function ContactPage() {
                       <div>
                         <div className="text-sm text-stone-500">Service Area</div>
                         <div className="font-medium text-stone-900">
-                          New York City & Tri-State Area
+                          Virtual events worldwide; live in Nashville & Baltimore
                         </div>
                         <div className="text-sm text-stone-500">
                           Travel available upon request

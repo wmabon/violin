@@ -131,8 +131,8 @@ export function Footer() {
               <li className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-amber-500 mt-0.5" />
                 <span>
-                  Available for events in<br />
-                  New York & Tri-State Area
+                  Available for virtual events worldwide<br />
+                  and live in Nashville & Baltimore
                 </span>
               </li>
             </ul>

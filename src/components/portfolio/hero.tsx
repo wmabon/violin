@@ -56,7 +56,7 @@ export function Hero() {
                 <div className="text-stone-400">Events Performed</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-white">15+</div>
+                <div className="text-3xl font-bold text-white">12+</div>
                 <div className="text-stone-400">Years Experience</div>
               </div>
               <div>

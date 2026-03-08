@@ -8,18 +8,18 @@ import { Button } from "@/components/ui/button";
 const credentials = [
   {
     icon: GraduationCap,
-    title: "Juilliard Graduate",
-    description: "Bachelor and Master of Music from The Juilliard School",
+    title: "Belmont University Performance Major",
+    description: "Pursuing a Bachelor of Music Performance (Violin) from Belmont University",
   },
   {
     icon: Award,
     title: "Award Winner",
-    description: "Multiple international competition prizes and recognitions",
+    description: "Multiple competition prizes and recognitions",
   },
   {
     icon: Music2,
     title: "Orchestra Experience",
-    description: "Performed with renowned orchestras worldwide",
+    description: "Performed with Boston Pops Conductor Keith Lockhart; toured with Andrea Bocelli across the Southeast U.S.",
   },
 ];
 
@@ -52,7 +52,7 @@ export function AboutPreview() {
                   <Music2 className="h-8 w-8 text-amber-700" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold text-stone-900">15+</div>
+                  <div className="text-2xl font-bold text-stone-900">12+</div>
                   <div className="text-stone-500">Years of Experience</div>
                 </div>
               </div>
@@ -67,19 +67,21 @@ export function AboutPreview() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 mb-6">
-              Meet Victoria
+              Meet Harrison
             </h2>
             <p className="text-lg text-stone-600 leading-relaxed mb-6">
-              With over 15 years of professional performance experience, I bring
-              a unique blend of classical training and contemporary versatility
-              to every event. My journey began at the prestigious Juilliard
-              School, where I honed my craft under world-renowned masters.
+              With over 12 years of performance experience, I bring a unique
+              blend of classical training and musicality to every event. My
+              journey began under the tutelage of the renown Nonnie Detrick and
+              I am presently studying performance at Belmont University, where I
+              am honing my craft under world-renowned masters.
             </p>
             <p className="text-lg text-stone-600 leading-relaxed mb-8">
               Today, I specialize in creating bespoke musical experiences for
               discerning clients who understand that live music transforms any
               occasion from ordinary to extraordinary. Every performance is
-              tailored to reflect your unique vision and create lasting memories.
+              tailored to reflect your unique vision and to create lasting
+              memories.
             </p>
 
             {/* Credentials */}

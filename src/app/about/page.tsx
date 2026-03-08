@@ -94,7 +94,7 @@ export default function AboutPage() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-3xl">
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-serif font-bold mb-6">
-                Meet Victoria
+                Meet Harrison
               </h1>
               <p className="text-xl text-stone-300 leading-relaxed">
                 Award-winning violinist dedicated to creating unforgettable
@@ -123,7 +123,7 @@ export default function AboutPage() {
                 {/* Quick Stats */}
                 <div className="grid grid-cols-3 gap-4">
                   <div className="bg-stone-50 rounded-xl p-4 text-center">
-                    <div className="text-3xl font-bold text-amber-700">15+</div>
+                    <div className="text-3xl font-bold text-amber-700">12+</div>
                     <div className="text-sm text-stone-600">Years Experience</div>
                   </div>
                   <div className="bg-stone-50 rounded-xl p-4 text-center">
@@ -145,29 +145,34 @@ export default function AboutPage() {
                   </h2>
                   <div className="prose prose-stone prose-lg">
                     <p>
-                      My love affair with the violin began at age five, when I
-                      first heard Itzhak Perlman perform on television. That
-                      moment sparked a lifelong dedication to the instrument
-                      that would eventually lead me to the stages of Carnegie
-                      Hall and beyond.
+                      My love affair with the music began at age three, when I
+                      was playing ukulele in a Kindermusic class. I remember
+                      hearing the Beatles and Michael Jackson when I was five.
+                      Later, listening and watching Jazz trumpeter Arturo
+                      Sandoval made a big impression. My great grandmother
+                      played for silent movies, and my mother let me play my
+                      great grandfather&apos;s fiddle at a young age. Whether at
+                      school, church, or with our local orchestras, music has
+                      always been a vital part of my life that I have loved
+                      sharing.
                     </p>
                     <p>
-                      After graduating from The Juilliard School with both
-                      Bachelor&apos;s and Master&apos;s degrees in Violin
-                      Performance, I embarked on a career that has taken me
-                      around the world. I&apos;ve had the privilege of
-                      performing with renowned orchestras, in prestigious
-                      concert halls, and at private events for discerning
-                      clients who understand the transformative power of live
-                      music.
+                      Now at Belmont University pursuing my Bachelor&apos;s in
+                      Violin Performance under the tutelage of Professor Boris
+                      Abramov, I am embarking on taking my technique to the next
+                      level. I&apos;ve had the privilege of performing with
+                      renowned orchestras, in major concert halls, and at
+                      private events for discerning clients who understand the
+                      transformative power of live music.
                     </p>
                     <p>
-                      Today, I specialize in bringing the elegance and emotion
-                      of live violin to weddings, corporate events, and private
-                      celebrations. Every performance is an opportunity to
-                      create a moment that will be remembered forever—and I
-                      approach each event with the same dedication and artistry
-                      that I bring to the concert stage.
+                      Today, I am focused upon my studies. When available for
+                      special projects, I specialize in bringing the elegance
+                      and emotion of live violin to weddings, corporate events,
+                      and private celebrations. Every performance is an
+                      opportunity to create a moment that will be remembered
+                      forever — and I approach each event with the same
+                      dedication and artistry that I bring to the concert stage.
                     </p>
                   </div>
                 </div>
@@ -180,9 +185,9 @@ export default function AboutPage() {
                     </div>
                     <h3 className="font-semibold text-stone-900">Education</h3>
                     <p className="text-sm text-stone-600">
-                      The Juilliard School
+                      Belmont University
                       <br />
-                      B.M. & M.M.
+                      Violin Performance (in process)
                     </p>
                   </div>
                   <div className="flex flex-col items-center text-center p-4">
@@ -191,7 +196,7 @@ export default function AboutPage() {
                     </div>
                     <h3 className="font-semibold text-stone-900">Recognition</h3>
                     <p className="text-sm text-stone-600">
-                      Multiple International
+                      Multiple
                       <br />
                       Competition Awards
                     </p>
@@ -202,8 +207,8 @@ export default function AboutPage() {
                     </div>
                     <h3 className="font-semibold text-stone-900">Based In</h3>
                     <p className="text-sm text-stone-600">
-                      New York City
-                      <br />& Tri-State Area
+                      Nashville
+                      <br />& Baltimore
                     </p>
                   </div>
                 </div>
@@ -212,79 +217,9 @@ export default function AboutPage() {
           </div>
         </section>
 
-        {/* Timeline Section */}
-        <section className="py-20 bg-stone-50">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl font-serif font-bold text-stone-900 mb-4">
-                Journey & Milestones
-              </h2>
-              <p className="text-lg text-stone-600">
-                Key moments in my musical journey
-              </p>
-            </div>
+        {/* Timeline Section - Hidden */}
 
-            <div className="relative">
-              {/* Timeline line */}
-              <div className="absolute left-1/2 transform -translate-x-1/2 w-0.5 h-full bg-amber-200" />
-
-              {/* Timeline items */}
-              <div className="space-y-12">
-                {milestones.map((milestone, index) => (
-                  <div
-                    key={milestone.year}
-                    className={`relative flex items-center ${
-                      index % 2 === 0 ? "flex-row" : "flex-row-reverse"
-                    }`}
-                  >
-                    <div className="w-1/2" />
-                    <div className="absolute left-1/2 transform -translate-x-1/2 w-12 h-12 bg-amber-600 rounded-full flex items-center justify-center text-white font-bold z-10">
-                      <Calendar className="h-5 w-5" />
-                    </div>
-                    <div
-                      className={`w-1/2 ${
-                        index % 2 === 0 ? "pr-12 text-right" : "pl-12"
-                      }`}
-                    >
-                      <div className="bg-white rounded-xl p-6 shadow-sm">
-                        <div className="text-amber-600 font-bold text-lg mb-1">
-                          {milestone.year}
-                        </div>
-                        <h3 className="text-xl font-semibold text-stone-900 mb-2">
-                          {milestone.title}
-                        </h3>
-                        <p className="text-stone-600">{milestone.description}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Awards Section */}
-        <section className="py-20 bg-white">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-serif font-bold text-stone-900 mb-4">
-                Awards & Recognition
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {awards.map((award, index) => (
-                <div
-                  key={index}
-                  className="flex items-center gap-4 p-4 bg-amber-50 rounded-lg"
-                >
-                  <Star className="h-6 w-6 text-amber-600 flex-shrink-0" />
-                  <span className="text-stone-800">{award}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* Awards Section - Hidden */}
 
         {/* Notable Venues */}
         <section className="py-20 bg-stone-900 text-white">
@@ -325,7 +260,7 @@ export default function AboutPage() {
               create an experience that resonates in the hearts of everyone
               present—an experience that will be cherished for a lifetime.&quot;
             </blockquote>
-            <p className="text-stone-500">— Victoria</p>
+            <p className="text-stone-500">— Harrison</p>
           </div>
         </section>
 
